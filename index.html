@@ -19,7 +19,7 @@
       padding: 15px;
     }
     .card {
-      background: white;
+      background: #ffffff;
       border-radius: 14px;
       padding: 35px 25px 30px;
       width: 100%;
@@ -42,13 +42,13 @@
     .step-counter {
       font-size: 15px;
       font-weight: 800;
-      color: #333;
+      color: #333333;
       margin-bottom: 12px;
     }
     .question-title {
       font-size: 16px;
       font-weight: 800;
-      color: #111;
+      color: #111111;
       margin-bottom: 25px;
       line-height: 1.35;
       min-height: 44px;
@@ -80,17 +80,48 @@
       justify-content: center;
       user-select: none;
     }
+    
+    /* Control deslizante interactivo estilizado */
     .slider {
+      -webkit-appearance: none;
+      appearance: none;
       width: 100%;
-      margin-bottom: 30px;
-      accent-color: #0d3b66;
-      cursor: pointer;
       height: 6px;
+      border-radius: 5px;
+      background: #e0e0e0;
+      outline: none;
+      cursor: pointer;
+      margin-bottom: 30px;
     }
+    .slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: #0d3b66;
+      border: 2px solid #ffffff;
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
+      cursor: pointer;
+      transition: transform 0.1s ease;
+    }
+    .slider::-webkit-slider-thumb:active {
+      transform: scale(1.15);
+    }
+    .slider::-moz-range-thumb {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: #0d3b66;
+      border: 2px solid #ffffff;
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
+      cursor: pointer;
+    }
+
     .textarea-obs {
       width: 100%;
       height: 110px;
-      border: 1px solid #aaa;
+      border: 1px solid #aaaaaa;
       border-radius: 6px;
       padding: 10px;
       font-family: inherit;
@@ -104,7 +135,7 @@
     }
     .btn-action {
       background: #0d3b66;
-      color: white;
+      color: #ffffff;
       border: none;
       padding: 10px 32px;
       border-radius: 6px;
@@ -136,20 +167,19 @@
     <div class="question-title" id="questionTitle">¿Qué tipo de servicio recibió?</div>
 
     <div id="contentArea">
-      <!-- Paso 1 -->
+      <!-- Paso 1: Radio Buttons -->
       <div id="step1Container" class="options-group">
         <label><input type="radio" name="servicio" value="Mantenimiento" checked> Mantenimiento</label>
         <label><input type="radio" name="servicio" value="Ventas de Repuesto"> Ventas de Repuesto</label>
-        <label><input type="radio" name="servicio" value="Primarios"> Primarios</label>
       </div>
 
-      <!-- Pasos con Slider y Emojis -->
+      <!-- Pasos 2 a 7 y 9 a 11: Slider Interactivo -->
       <div id="sliderContainer" class="hidden">
         <div id="emojiDisplay" class="emoji-display">😡</div>
-        <input type="range" id="ratingSlider" class="slider" min="1" max="5" value="1" oninput="cambiarEmoji(this.value)">
+        <input type="range" id="ratingSlider" class="slider" min="1" max="5" value="1" oninput="actualizarSliderEnVivo(this.value)">
       </div>
 
-      <!-- Paso 8 -->
+      <!-- Paso 8: Observaciones -->
       <div id="textContainer" class="hidden">
         <textarea id="obsInput" class="textarea-obs" placeholder="Escriba aquí sus observaciones (opcional)..."></textarea>
       </div>
@@ -166,8 +196,8 @@
   </div>
 
   <script>
-    // Coloca aquí la URL de tu Web App de Google Apps Script terminada en /exec
-    var SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz_tu_script_id/exec";
+    // URL de tu Web App en Google Apps Script
+    var SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxb_k9qoRJkxGd4uA13AHLvyBndF6go06Ee8F86g1pX6pPcv8qC679a-Z5JtF014n1h/exec";
 
     var preguntas = [
       { id: 1, tipo: 'radio', titulo: '¿Qué tipo de servicio recibió?' },
@@ -184,18 +214,21 @@
     ];
 
     var emojis = {
-      "1": "😡",
-      "2": "🙄",
-      "3": "😐",
-      "4": "😊",
-      "5": "😍"
+      "1": "😡", // Muy insatisfecho
+      "2": "🙄", // Insatisfecho
+      "3": "😐", // Neutro
+      "4": "😊", // Contento
+      "5": "😍"  // Muy satisfecho
     };
 
     var pasoActual = 0;
     var respuestas = {};
 
-    function cambiarEmoji(val) {
+    function actualizarSliderEnVivo(val) {
       document.getElementById('emojiDisplay').innerText = emojis[val] || "😐";
+      var porcentaje = ((val - 1) / 4) * 100;
+      var slider = document.getElementById('ratingSlider');
+      slider.style.background = 'linear-gradient(to right, #0d3b66 0%, #0d3b66 ' + porcentaje + '%, #e0e0e0 ' + porcentaje + '%, #e0e0e0 100%)';
     }
 
     function avanzarPaso() {
@@ -215,6 +248,7 @@
         respuestas.p8_observacion = document.getElementById('obsInput').value.trim();
       }
 
+      // Si finalizó la pregunta 11
       if (pasoActual === preguntas.length - 1) {
         enviarResultados();
         return;
@@ -237,8 +271,9 @@
         document.getElementById('step1Container').classList.remove('hidden');
       } else if (p.tipo === 'slider') {
         document.getElementById('sliderContainer').classList.remove('hidden');
-        document.getElementById('ratingSlider').value = 1;
-        cambiarEmoji("1");
+        var slider = document.getElementById('ratingSlider');
+        slider.value = 1;
+        actualizarSliderEnVivo(1);
       } else if (p.tipo === 'text') {
         document.getElementById('textContainer').classList.remove('hidden');
       }
@@ -255,6 +290,7 @@
       btn.disabled = true;
       btn.innerText = "Enviando...";
 
+      // Envío por fetch directo hacia Apps Script
       fetch(SCRIPT_URL, {
         method: "POST",
         mode: "no-cors",
