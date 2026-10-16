@@ -1,4 +1,119 @@
-
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Encuesta de Satisfacción - Salcedo Motors</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      margin: 0;
+      background-color: #0d3b66; /* Azul corporativo */
+      font-family: Arial, Helvetica, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 15px;
+    }
+    .card {
+      background: white;
+      border-radius: 14px;
+      padding: 35px 25px 30px;
+      width: 100%;
+      max-width: 390px;
+      text-align: center;
+      box-shadow: 0px 10px 25px rgba(0, 0, 0, 0.25);
+    }
+    .logo-container {
+      margin-bottom: 20px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 70px;
+    }
+    .logo {
+      max-width: 160px;
+      max-height: 80px;
+      object-fit: contain;
+    }
+    .step-counter {
+      font-size: 15px;
+      font-weight: 800;
+      color: #333;
+      margin-bottom: 12px;
+    }
+    .question-title {
+      font-size: 16px;
+      font-weight: 800;
+      color: #111;
+      margin-bottom: 25px;
+      line-height: 1.35;
+      min-height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .options-group {
+      text-align: left;
+      margin: 25px 0 35px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      padding-left: 20px;
+    }
+    .options-group label {
+      font-size: 15px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .emoji-display {
+      font-size: 78px;
+      margin: 10px 0 25px;
+      height: 90px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      user-select: none;
+    }
+    .slider {
+      width: 100%;
+      margin-bottom: 30px;
+      accent-color: #0d3b66;
+      cursor: pointer;
+      height: 6px;
+    }
+    .textarea-obs {
+      width: 100%;
+      height: 110px;
+      border: 1px solid #aaa;
+      border-radius: 6px;
+      padding: 10px;
+      font-family: inherit;
+      font-size: 14px;
+      resize: vertical;
+      margin-bottom: 30px;
+      outline: none;
+    }
+    .textarea-obs:focus {
+      border-color: #0d3b66;
+    }
+    .btn-action {
+      background: #0d3b66;
+      color: white;
+      border: none;
+      padding: 10px 32px;
+      border-radius: 6px;
+      font-size: 15px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .btn-action:hover {
       background: #092744;
     }
     .btn-action:disabled {
@@ -50,8 +165,8 @@
   </div>
 
   <script>
-    // PEGA AQUÍ LA URL DE TU WEB APP DE APPS SCRIPT
-    var SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxb_k9qoRJkxGd4uA13AHLvyBndF6go06EeTXWp7S0b3caFjSazIpBXIpkMMXwR66oW/exec";
+    // Coloca aquí la URL de tu Web App de Google Apps Script terminada en /exec
+    var SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz_tu_script_id/exec";
 
     var preguntas = [
       { id: 1, tipo: 'radio', titulo: '¿Qué tipo de servicio recibió?' },
@@ -139,7 +254,6 @@
       btn.disabled = true;
       btn.innerText = "Enviando...";
 
-      // Enviar datos hacia Apps Script por método POST
       fetch(SCRIPT_URL, {
         method: "POST",
         mode: "no-cors",
